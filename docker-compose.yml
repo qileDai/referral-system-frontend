@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app/backend
+      - sqlite_data:/app/backend/data
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=your-secret-key-here
+    command: >
+      sh -c "cd /app/backend &&
+             python manage.py migrate --noinput &&
+             python manage.py init_data &&
+             python manage.py collectstatic --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  sqlite_data:
